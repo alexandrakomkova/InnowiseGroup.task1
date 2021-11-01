@@ -12,13 +12,13 @@ def get_html(url)
 end
 def parse_product(product_url)
   html = get_html(product_url)
-  product_name = html.xpath('//h1[@class="product_main_name"]').text
-  product_img = html.xpath('//img[@id="bigpic"]/@src')
-  product_weight_variation = html.xpath('//span[@class="radio_label"]')
-  price_per_weight = html.xpath('//span[@class="price_comb"]')
+  product_name = html.xpath('//h1[@class = "product_main_name"]').text
+  product_img = html.xpath('//img[@id = "bigpic"]/@src')
+  product_weight_variation = html.xpath('//span[@class = "radio_label"]')
+  price_per_weight = html.xpath('//span[@class = "price_comb"]')
   (0...product_weight_variation.length).each do |each_with_index|
-    data_to_write = [product_name, product_img,  product_weight_variation[each_with_index].text.to_s, price_per_weight[each_with_index].text.to_s]
-    puts product_name, product_img,  product_weight_variation[each_with_index].text.to_s, price_per_weight[each_with_index].text.to_s
+    data_to_write = [product_name.strip, product_img,  product_weight_variation[each_with_index].text.to_s, price_per_weight[each_with_index].text.to_s]
+    puts product_name.strip, product_img,  product_weight_variation[each_with_index].text.to_s, price_per_weight[each_with_index].text.to_s
     write_to_file("parsingProducts.csv", data_to_write, product_name)
   end
 end
@@ -51,7 +51,7 @@ def create_file(file_name)
   set_headers_to_file(file_name)
 end
 def set_headers_to_file(file_name)
-  headers = %w[name img weight price]
+  headers = %w[name img_src weight price]
   CSV.open(file_name, 'a+') do |row|
     row << headers
   end
