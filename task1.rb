@@ -17,7 +17,7 @@ def parse_product(product_url)
   product_weight_variation = html.xpath('//span[@class = "radio_label"]')
   price_per_weight = html.xpath('//span[@class = "price_comb"]')
   (0...product_weight_variation.length).each do |each_with_index|
-    show_data(product_name,
+    show_parsed_data(product_name,
               product_img,
               product_weight_variation[each_with_index].text.to_s,
               price_per_weight[each_with_index].text.to_s)
@@ -63,7 +63,7 @@ def set_headers_to_file(file_name)
     row << headers
   end
 end
-def show_data(name, img, weight, price)
+def show_parsed_data(name, img, weight, price)
   puts name.strip, img,  weight, price
 end
 def prepare_data_to_write(name, img, weight, price)
