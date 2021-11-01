@@ -17,9 +17,16 @@ def parse_product(product_url)
   product_weight_variation = html.xpath('//span[@class = "radio_label"]')
   price_per_weight = html.xpath('//span[@class = "price_comb"]')
   (0...product_weight_variation.length).each do |each_with_index|
-    data_to_write = [product_name.strip, product_img,  product_weight_variation[each_with_index].text.to_s, price_per_weight[each_with_index].text.to_s]
-    puts product_name.strip, product_img,  product_weight_variation[each_with_index].text.to_s, price_per_weight[each_with_index].text.to_s
-    write_to_file("parsingProducts.csv", data_to_write, product_name)
+    show_data(product_name,
+              product_img,
+              product_weight_variation[each_with_index].text.to_s,
+              price_per_weight[each_with_index].text.to_s)
+    write_to_file("parsingProducts.csv",
+                  prepare_data_to_write(product_name,
+                                        product_img,
+                                        product_weight_variation[each_with_index].text.to_s,
+                                        price_per_weight[each_with_index].text.to_s ),
+                  product_name)
   end
 end
 def parse_one_page(count_products, url)
@@ -56,11 +63,17 @@ def set_headers_to_file(file_name)
     row << headers
   end
 end
+def show_data(name, img, weight, price)
+  puts name.strip, img,  weight, price
+end
+def prepare_data_to_write(name, img, weight, price)
+  data_to_write = [name.strip, img,  weight, price]
+end
 def write_to_file(file_name, data_to_write, product_name)
   CSV.open(file_name, 'a+') do |row|
     row << data_to_write
   end
-  puts "-----product #{product_name} is written-----\n\n"
+  puts "-----product #{product_name.strip} is written-----\n\n"
 end
 parse('https://www.petsonic.com/farmacia-para-gatos/', "parsingProducts.csv")
 
