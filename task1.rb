@@ -16,9 +16,9 @@ def parse_product(product_url)
 
   html = get_html(product_url)
   product_name= html.xpath('//h1[@class="product_main_name"]').text
-  product_img=html.xpath('//*[@id="bigpic"]/@src')
-  product_weight_variation=html.xpath('//*[@class="radio_label"]')
-  price_per_weight=html.xpath('//*[@class="price_comb"]')
+  product_img=html.xpath('//img[@id="bigpic"]/@src')
+  product_weight_variation=html.xpath('//span[@class="radio_label"]')
+  price_per_weight=html.xpath('//span[@class="price_comb"]')
 
   (0...product_weight_variation.length).each do |variation_counter|
     data_to_write =[product_name, product_img,  product_weight_variation[variation_counter].text.to_s, price_per_weight[variation_counter].text.to_s]
@@ -28,7 +28,7 @@ def parse_product(product_url)
 
 end
 def parse_one_page(count_products, url)
-  product_page = get_html(url).xpath('//div[@class="product-desc display_sd"]/a/@href')
+  product_page = get_html(url).xpath('//div[@class="product-desc display_sd"]//@href')
 
   (0...count_products).each do |product_counter|
     parse_product(product_page[product_counter].to_s.gsub(/\s+/, ""))
