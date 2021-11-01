@@ -13,16 +13,20 @@ end
 
 def parse_product(product_url)
   html = get_html(product_url)
+  get_info_about_product(html)[2].each_with_index do |weight, index|
+    work_with_parsed_data(get_info_about_product(html)[0],
+                          get_info_about_product(html)[1],
+                          weight.text.to_s,
+                          get_info_about_product(html)[3][index].text.to_s)
+  end
+end
+
+def get_info_about_product(html)
   product_name = html.xpath('//h1[@class = "product_main_name"]').text
   product_img = html.xpath('//img[@id = "bigpic"]/@src')
   product_weight_variation = html.xpath('//span[@class = "radio_label"]')
   price_per_weight = html.xpath('//span[@class = "price_comb"]')
-  product_weight_variation.each_with_index do |weight, index|
-    work_with_parsed_data(product_name,
-                          product_img,
-                          weight.text.to_s,
-                          price_per_weight[index].text.to_s)
-  end
+  [product_name, product_img, product_weight_variation, price_per_weight]
 end
 
 def work_with_parsed_data(name, img, weight, price)
@@ -92,15 +96,4 @@ end
 
 parse('https://www.petsonic.com/farmacia-para-gatos/', "parsingProducts.csv")
 
-
-
-
-=begin
- (0...product_weight_variation.length).each do |each_with_index|
-    work_with_parsed_data(product_name,
-                          product_img,
-                          product_weight_variation[each_with_index].text.to_s,
-                          price_per_weight[each_with_index].text.to_s)
-  end
-=end
 
