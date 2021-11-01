@@ -31,7 +31,7 @@ def parse_one_page(count_products, url)
 end
 def parse(url, file_name)
   puts "-----start parsing-----\n\n"
-  CSV.open(file_name, 'w')
+  create_file(file_name)
   count_products = get_html(url).xpath('//input[@id = "nb_item_bottom"]/@value').text.to_i
   product_per_page = 25
   count_pages = (count_products/product_per_page.to_f).ceil
@@ -45,6 +45,16 @@ def parse(url, file_name)
     count_products-=product_per_page
   end
   puts "-----finished parsing-----"
+end
+def create_file(file_name)
+  CSV.open(file_name, 'w')
+  set_headers_to_file(file_name)
+end
+def set_headers_to_file(file_name)
+  headers = %w[name img weight price]
+  CSV.open(file_name, 'a+') do |row|
+    row << headers
+  end
 end
 def write_to_file(file_name, data_to_write, product_name)
   CSV.open(file_name, 'a+') do |row|
