@@ -12,9 +12,9 @@ def get_html(url)
   Nokogiri::HTML(http.body_str)
 end
 
-def parse_product(url)
+def parse_product(product_url)
 
-  html = get_html(url)
+  html = get_html(product_url)
   product_name= html.xpath('//h1[@class="product_main_name"]').text
   product_img=html.xpath('//*[@id="bigpic"]/@src')
   product_weight_variation=html.xpath('//*[@class="radio_label"]')
