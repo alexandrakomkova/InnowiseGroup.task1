@@ -31,27 +31,30 @@ def parse_product(product_url)
 end
 def parse_one_page(count_products, url)
   product_page = get_html(url).xpath('//div[@class = "product-desc display_sd"]//@href')
-
   (0...count_products).each do |product_counter|
     parse_product(product_page[product_counter].to_s.gsub(/\s+/, ""))
   end
 end
+def set_count_products_to_parse(count_products, p_counter, product_per_page, url)
+  url = form_page_url(url, p_counter) if p_counter > 1
+  if count_products < product_per_page
+    parse_one_page(count_products, url)
+  else
+    parse_one_page(product_per_page, url)
+  end
+end
 def parse(url, file_name)
-  puts "-----start parsing-----\n\n"
   create_file(file_name)
   count_products = get_html(url).xpath('//input[@id = "nb_item_bottom"]/@value').text.to_i
   product_per_page = 25
   count_pages = (count_products/product_per_page.to_f).ceil
   (1..count_pages).each do |p_counter|
-    url = url+"?p="+"#{p_counter}" if p_counter>1
-    if(count_products<product_per_page)
-      parse_one_page(count_products, url)
-    else
-      parse_one_page(product_per_page, url)
-    end
-    count_products-=product_per_page
+    set_count_products_to_parse(count_products, p_counter, product_per_page, url)
+    count_products -= product_per_page
   end
-  puts "-----finished parsing-----"
+end
+def form_page_url(url, p_counter)
+  url + "?p=" + "#{p_counter}"
 end
 def create_file(file_name)
   CSV.open(file_name, 'w')
@@ -67,7 +70,7 @@ def show_parsed_data(name, img, weight, price)
   puts name.strip, img,  weight, price
 end
 def prepare_data_to_write(name, img, weight, price)
-  data_to_write = [name.strip, img,  weight, price]
+  [name.strip, img,  weight, price]
 end
 def write_to_file(file_name, data_to_write, product_name)
   CSV.open(file_name, 'a+') do |row|
