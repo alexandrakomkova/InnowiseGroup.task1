@@ -87,8 +87,31 @@ def form_product_name(name,  weight)
   name.strip + "\n"+  weight
 end
 
+def form_product_price(price)
+  price.gsub(/\s+/, "").chop
+end
+
+def form_product_weight(weight)
+  case get_weight_measurement(weight.gsub(/\s+/, ""))
+  when "Gr", "Gr."
+    return get_weight_number(weight)+" gr"
+  when "Kg", "Kg."
+    return get_weight_number(weight)+" kg"
+  else
+    return weight
+  end
+end
+
+def get_weight_measurement(weight)
+  return weight.delete('0-9')
+end
+
+def get_weight_number(weight)
+  return weight.delete('^0-9')
+end
+
 def prepare_data_to_write(name, img, weight, price)
-  [form_product_name(name,  weight), price, img]
+  [form_product_name(name, form_product_weight(weight)), form_product_price(price), img]
 end
 
 def write_to_file(file_name, data_to_write, product_name)
