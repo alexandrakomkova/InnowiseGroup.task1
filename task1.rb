@@ -73,7 +73,7 @@ def create_file(file_name)
 end
 
 def set_headers_to_file(file_name)
-  headers = %w[name img_src weight price]
+  headers = %w[name price image]
   CSV.open(file_name, 'a+') do |row|
     row << headers
   end
@@ -83,8 +83,12 @@ def show_parsed_data(name, img, weight, price)
   puts name.strip, img,  weight, price
 end
 
+def form_product_name(name,  weight)
+  name.strip + "\n"+  weight
+end
+
 def prepare_data_to_write(name, img, weight, price)
-  [name.strip, img,  weight, price]
+  [form_product_name(name,  weight), price, img]
 end
 
 def write_to_file(file_name, data_to_write, product_name)
